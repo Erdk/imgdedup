@@ -1,79 +1,28 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"image"
-	"image/jpeg"
-	"image/png"
 	"io/ioutil"
 	"log"
-	"math"
 	"os"
 	"path/filepath"
 )
 
-const dimm = 16
-
-type hist [dimm][dimm][dimm]uint
-
-type histrec struct {
-	h *hist
-	n string
-}
-
-func histogram(name string) histrec {
-	fd, err := os.Open(name)
-	if err != nil {
-		panic(fmt.Sprintf("Cannot open file: %v\n", name))
-	}
-	defer fd.Close()
-
-	var img image.Image
-	switch filepath.Ext(name) {
-	case ".jpg", ".jpeg", ".JPG":
-		img, err = jpeg.Decode(fd)
-		if err != nil {
-			panic(fmt.Sprintf("Error at decoding: %v\n", name))
-		}
-	case ".png":
-		img, err = png.Decode(fd)
-		if err != nil {
-			panic(fmt.Sprintf("Error at decoding: %v\n", name))
-		}
-	default:
-		panic(fmt.Sprintf("Cannot decode: %v\n", name))
-	}
-
-	var histogram hist
-
-	boundaries := img.Bounds()
-	for i := boundaries.Min.X; i < boundaries.Max.X; i++ {
-		for j := boundaries.Min.Y; j < boundaries.Max.Y; j++ {
-			r, g, b, _ := img.At(i, j).RGBA()
-			histogram[r/(65536/dimm)][g/(65536/dimm)][b/(65536/dimm)]++
-		}
-	}
-
-	return histrec{h: &histogram, n: name}
-}
-
-func manhatanDistance(h1, h2 *hist) uint {
-	var sum uint
-	for i := 0; i < dimm; i++ {
-		for j := 0; j < dimm; j++ {
-			for k := 0; k < dimm; k++ {
-				sum += uint(math.Abs(float64(h1[i][j][k]) - float64(h2[i][j][k])))
-			}
-		}
-	}
-	return sum
-}
+var distanceFunction = flag.String("d", "manhattan", "distance type, default manhattan")
+var toleration = flag.Uint("t", 100000, "distance under this value indicates that images are similar, default: 100000")
+var path = flag.String("p", "", "path to folder with images")
+var verbose = flag.Bool("v", false, "turn on verbose messages")
 
 func main() {
-	if len(os.Args) < 2 {
-		panic("provide dir")
+	flag.Parse()
+
+	if *path == "" {
+		flag.PrintDefaults()
+		os.Exit(1)
 	}
-	dir, err := filepath.Abs(os.Args[1])
+
+	dir, err := filepath.Abs(*path)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -84,15 +33,22 @@ func main() {
 	}
 
 	hList := []histrec{}
-	for _, f := range files {
-		fmt.Printf("Processing: %v\n", os.Args[1]+"/"+f.Name())
-		hList = append(hList, histogram(os.Args[1]+"/"+f.Name()))
+	numFiles := len(files)
+	for i, f := range files {
+		if *verbose {
+			fmt.Printf("Processing(%v/%v): %v\n", i, numFiles, *path+"/"+f.Name())
+		} else {
+			fmt.Printf("\r%d/%d", i, numFiles)
+		}
+		hList = append(hList, histogram(*path+"/"+f.Name()))
 	}
 
+	fmt.Println()
+	distFunc := getDistanceFunction(*distanceFunction)
 	for i := 0; i < len(hList)-1; i++ {
 		for j := i + 1; j < len(hList); j++ {
-			distance := manhatanDistance(hList[i].h, hList[j].h)
-			if distance < 100000 {
+			distance := distFunc(hList[i].h, hList[j].h)
+			if distance < *toleration {
 				fmt.Printf("Similar: %v <-> %v  dist: %v\n", hList[i].n, hList[j].n, distance)
 			}
 		}
