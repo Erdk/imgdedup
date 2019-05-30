@@ -18,7 +18,7 @@ type histrec struct {
 	n string
 }
 
-func histogram(name string) histrec {
+func histogram(name string) (histrec, error) {
 	fd, err := os.Open(name)
 	if err != nil {
 		panic(fmt.Sprintf("Cannot open file: %v\n", name))
@@ -38,7 +38,7 @@ func histogram(name string) histrec {
 			panic(fmt.Sprintf("Error at decoding: %v\n", name))
 		}
 	default:
-		panic(fmt.Sprintf("Cannot decode: %v\n", name))
+		return histrec{}, fmt.Errorf("Cannot process %v", name)
 	}
 
 	var histogram hist
@@ -51,5 +51,5 @@ func histogram(name string) histrec {
 		}
 	}
 
-	return histrec{h: &histogram, n: name}
+	return histrec{h: &histogram, n: name}, nil
 }

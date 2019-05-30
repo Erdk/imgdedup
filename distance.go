@@ -42,8 +42,19 @@ func manhattanDistance(h1, h2 *hist) uint {
 }
 
 func chisquareDistance(h1, h2 *hist) uint {
-	panic("chisquare not implemented")
-	return 0
+	var sum uint
+
+	for i := 0; i < dimm; i++ {
+		for j := 0; j < dimm; j++ {
+			for k := 0; k < dimm; k++ {
+				if h1[i][j][k]+h2[i][j][k] > 0 {
+					sum += uint(math.Pow(float64(h1[i][j][k]-h2[i][j][k]), 2.0) / float64(h1[i][j][k]+h2[i][j][k]))
+				}
+			}
+		}
+	}
+
+	return sum / 2
 }
 
 func intersectionDistance(h1, h2 *hist) uint {
