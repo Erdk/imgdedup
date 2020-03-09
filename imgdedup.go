@@ -11,7 +11,7 @@ import (
 )
 
 var distanceFunction = flag.String("d", "manhattan", "distance type, default manhattan")
-var toleration = flag.Uint("t", 100000, "distance under this value indicates that images are similar, default: 100000")
+var toleration = flag.Int("t", 100000, "distance under this value indicates that images are similar, default: 100000")
 var dirpath = flag.String("p", "", "path to folder with images")
 var verbose = flag.Bool("v", false, "turn on verbose messages")
 
@@ -45,7 +45,7 @@ func main() {
 
 		hist, err := histogram(fname)
 		if err != nil {
-			fmt.Printf(err.Error())
+			fmt.Printf("\r%s\n", err.Error())
 		} else {
 			hList = append(hList, hist)
 		}

@@ -11,7 +11,7 @@ import (
 
 const dimm = 16
 
-type hist [dimm][dimm][dimm]uint
+type hist [dimm][dimm][dimm]int
 
 type histrec struct {
 	h *hist
