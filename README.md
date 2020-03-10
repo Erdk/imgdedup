@@ -20,19 +20,19 @@ How to use?
 -----------
 
 ```
-$ ./imgdedup -p $DIR [-v] [-t $NUM] [-d $DISTANCE_FUNCTION]
+$ ./imgdedup -d $DIR [-v] [-t $NUM] [-d $DISTANCE_FUNCTION]
 ```
 
-* -p
+* -d
 
   directory with images to check, *required*
 * -v
 
   verbose output
-* -t $NUM
+* -e $NUM
 
   set tolerance to $NUM, distance below this value indicates that images are similar, default: 100000
-* -d $DISTANCE_FUNCTION
+* -t $DISTANCE_FUNCTION
 
   set distance function to one of the following:
   
@@ -41,6 +41,9 @@ $ ./imgdedup -p $DIR [-v] [-t $NUM] [-d $DISTANCE_FUNCTION]
   * correlation,
   * intersection,
   * bhattacharyya
+* -p
+
+  basic profiling support
 
 TODO
 ----
