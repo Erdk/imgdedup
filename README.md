@@ -1,6 +1,8 @@
 imgdedup
 ========
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/Erdk/imgdedup)](https://goreportcard.com/report/github.com/Erdk/imgdedup)
+
 Introduction
 ------------
 
