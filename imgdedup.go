@@ -8,12 +8,15 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/pkg/profile"
 )
 
-var distanceFunction = flag.String("d", "manhattan", "distance type, default manhattan")
-var toleration = flag.Int("t", 100000, "distance under this value indicates that images are similar, default: 100000")
-var dirpath = flag.String("p", "", "path to folder with images")
+var distanceFunction = flag.String("t", "manhattan", "distance type, default manhattan")
+var toleration = flag.Int("e", 100000, "distance under this value indicates that images are similar, default: 100000")
+var dirpath = flag.String("d", "", "directory with images")
 var verbose = flag.Bool("v", false, "turn on verbose messages")
+var prof = flag.Bool("p", false, "profiling")
 
 func main() {
 	flag.Parse()
@@ -22,6 +25,21 @@ func main() {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
+
+	if *prof {
+		defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
+	}
+	/*
+		switch prof {
+		case "cpu":
+			defer profile.Start(profile.CPUProfile, profile.ProfilePath(".")).Stop()
+		case "mem":
+			defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
+		case "block":
+			defer profile.Start(profile.BlockProfile, profile.ProfilePath(".")).Stop()
+		default:
+		}
+	*/
 
 	dir, err := filepath.Abs(*dirpath)
 	if err != nil {
