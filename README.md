@@ -10,8 +10,6 @@ How to build?
 ------------
 
 ```
-$ cd $GOPATH
-$ mkdir -p src/github.com/Erdk && cd src/github.com/Erdk
 $ git clone https://github.com/Erdk/imgdedup && cd imgdedup
 $ go build .
 ```
