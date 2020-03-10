@@ -1,18 +1,32 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 var result int
 
-func TestManhattan(t *testing.T) {
+// Manhattan
+
+func testHelper() (histrec, histrec, error) {
 	histogram1, err := histogram("test/img1.jpg") // [15][0][0] = 16384, rest is 0
 	if err != nil {
-		t.Errorf("Cannot load test/img1.jpg")
+		return histrec{}, histrec{}, fmt.Errorf("Cannot load file: %s", err.Error())
 	}
 
 	histogram2, err := histogram("test/img2.jpg") // [0][15][0] = 16384, rest is 0
 	if err != nil {
-		t.Errorf("Cannot load test/img2.jpg")
+		return histrec{}, histrec{}, fmt.Errorf("Cannot load file: %s", err.Error())
+	}
+
+	return histogram1, histogram2, err
+}
+
+func TestManhattan(t *testing.T) {
+	histogram1, histogram2, err := testHelper()
+	if err != nil {
+		t.Error(err)
 	}
 
 	result := manhattanDistance(histogram1.h, histogram2.h) // 32768
@@ -22,14 +36,9 @@ func TestManhattan(t *testing.T) {
 }
 
 func TestManhattan2(t *testing.T) {
-	histogram1, err := histogram("test/img1.jpg") // [15][0][0] = 16384, rest is 0
+	histogram1, histogram2, err := testHelper()
 	if err != nil {
-		t.Errorf("Cannot load test/img1.jpg")
-	}
-
-	histogram2, err := histogram("test/img2.jpg") // [0][15][0] = 16384, rest is 0
-	if err != nil {
-		t.Errorf("Cannot load test/img2.jpg")
+		t.Error(err)
 	}
 
 	result := manhattanDistance2(histogram1.h, histogram2.h) // 32768
@@ -39,14 +48,9 @@ func TestManhattan2(t *testing.T) {
 }
 
 func TestManhattan3(t *testing.T) {
-	histogram1, err := histogram("test/img1.jpg") // [15][0][0] = 16384, rest is 0
+	histogram1, histogram2, err := testHelper()
 	if err != nil {
-		t.Errorf("Cannot load test/img1.jpg")
-	}
-
-	histogram2, err := histogram("test/img2.jpg") // [0][15][0] = 16384, rest is 0
-	if err != nil {
-		t.Errorf("Cannot load test/img2.jpg")
+		t.Error(err)
 	}
 
 	result := manhattanDistance3(histogram1.h, histogram2.h) // 32768
@@ -56,14 +60,9 @@ func TestManhattan3(t *testing.T) {
 }
 
 func TestManhattan4(t *testing.T) {
-	histogram1, err := histogram("test/img1.jpg") // [15][0][0] = 16384, rest is 0
+	histogram1, histogram2, err := testHelper()
 	if err != nil {
-		t.Errorf("Cannot load test/img1.jpg")
-	}
-
-	histogram2, err := histogram("test/img2.jpg") // [0][15][0] = 16384, rest is 0
-	if err != nil {
-		t.Errorf("Cannot load test/img2.jpg")
+		t.Error(err)
 	}
 
 	result := manhattanDistance4(histogram1.h, histogram2.h) // 32768
@@ -73,14 +72,9 @@ func TestManhattan4(t *testing.T) {
 }
 
 func BenchmarkManhattan(b *testing.B) {
-	histogram1, err := histogram("test/img1.jpg")
+	histogram1, histogram2, err := testHelper()
 	if err != nil {
-		b.Errorf("Cannot load test/img1.jpg")
-	}
-
-	histogram2, err := histogram("test/img2.jpg")
-	if err != nil {
-		b.Errorf("Cannot load test/img2.jpg")
+		b.Error(err)
 	}
 
 	b.ResetTimer()
@@ -90,14 +84,9 @@ func BenchmarkManhattan(b *testing.B) {
 }
 
 func BenchmarkManhattan2(b *testing.B) {
-	histogram1, err := histogram("test/img1.jpg")
+	histogram1, histogram2, err := testHelper()
 	if err != nil {
-		b.Errorf("Cannot load test/img1.jpg")
-	}
-
-	histogram2, err := histogram("test/img2.jpg")
-	if err != nil {
-		b.Errorf("Cannot load test/img2.jpg")
+		b.Error(err)
 	}
 
 	b.ResetTimer()
@@ -107,14 +96,9 @@ func BenchmarkManhattan2(b *testing.B) {
 }
 
 func BenchmarkManhattan3(b *testing.B) {
-	histogram1, err := histogram("test/img1.jpg")
+	histogram1, histogram2, err := testHelper()
 	if err != nil {
-		b.Errorf("Cannot load test/img1.jpg")
-	}
-
-	histogram2, err := histogram("test/img2.jpg")
-	if err != nil {
-		b.Errorf("Cannot load test/img2.jpg")
+		b.Error(err)
 	}
 
 	b.ResetTimer()
@@ -124,14 +108,9 @@ func BenchmarkManhattan3(b *testing.B) {
 }
 
 func BenchmarkManhattan4(b *testing.B) {
-	histogram1, err := histogram("test/img1.jpg")
+	histogram1, histogram2, err := testHelper()
 	if err != nil {
-		b.Errorf("Cannot load test/img1.jpg")
-	}
-
-	histogram2, err := histogram("test/img2.jpg")
-	if err != nil {
-		b.Errorf("Cannot load test/img2.jpg")
+		b.Error(err)
 	}
 
 	b.ResetTimer()
