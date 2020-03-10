@@ -51,7 +51,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	hList := []histrec{}
+	hList := []*histrec{}
 	numFiles := len(files)
 	for i, f := range files {
 		fname := path.Join(*dirpath, f.Name())

@@ -18,10 +18,10 @@ type histrec struct {
 	n string
 }
 
-func histogram(name string) (histrec, error) {
+func histogram(name string) (*histrec, error) {
 	fd, err := os.Open(name)
 	if err != nil {
-		panic(fmt.Sprintf("Cannot open file: %v\n", name))
+		return nil, fmt.Errorf("Cannot open file: %v", name)
 	}
 	defer fd.Close()
 
@@ -30,15 +30,15 @@ func histogram(name string) (histrec, error) {
 	case ".jpg", ".jpeg", ".JPG":
 		img, err = jpeg.Decode(fd)
 		if err != nil {
-			panic(fmt.Sprintf("Error at decoding: %v\n", name))
+			return nil, fmt.Errorf("Error at decoding: %v", name)
 		}
 	case ".png":
 		img, err = png.Decode(fd)
 		if err != nil {
-			panic(fmt.Sprintf("Error at decoding: %v\n", name))
+			return nil, fmt.Errorf("Error at decoding: %v", name)
 		}
 	default:
-		return histrec{}, fmt.Errorf("Cannot process %v", name)
+		return nil, fmt.Errorf("Cannot process %v", name)
 	}
 
 	var histogram hist
@@ -51,5 +51,5 @@ func histogram(name string) (histrec, error) {
 		}
 	}
 
-	return histrec{h: &histogram, n: name}, nil
+	return &histrec{h: &histogram, n: name}, nil
 }

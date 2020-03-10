@@ -20,7 +20,7 @@ func testHelper() (*histrec, *histrec, error) {
 		return nil, nil, fmt.Errorf("Cannot load file: %s", err.Error())
 	}
 
-	return &histogram1, &histogram2, err
+	return histogram1, histogram2, err
 }
 
 // Manhattan
@@ -132,5 +132,41 @@ func TestChiSquare(t *testing.T) {
 	result := chisquareDistance(histogram1.h, histogram2.h) // 32768 / 2 = 16384
 	if result != 16384 {
 		t.Errorf("%s: should be %d, instead of %d\n", t.Name(), 16384, result)
+	}
+}
+
+func TestChiSquare2(t *testing.T) {
+	histogram1, histogram2, err := testHelper()
+	if err != nil {
+		t.Error(err)
+	}
+
+	result := chisquareDistance2(histogram1.h, histogram2.h) // 32768 / 2 = 16384
+	if result != 16384 {
+		t.Errorf("%s: should be %d, instead of %d\n", t.Name(), 16384, result)
+	}
+}
+
+func BenchmarkChiSquare(b *testing.B) {
+	histogram1, histogram2, err := testHelper()
+	if err != nil {
+		b.Error(err)
+	}
+
+	b.ResetTimer()
+	for n := 0; n < b.N; n++ {
+		result = chisquareDistance(histogram1.h, histogram2.h)
+	}
+}
+
+func BenchmarkChiSquare2(b *testing.B) {
+	histogram1, histogram2, err := testHelper()
+	if err != nil {
+		b.Error(err)
+	}
+
+	b.ResetTimer()
+	for n := 0; n < b.N; n++ {
+		result = chisquareDistance2(histogram1.h, histogram2.h)
 	}
 }

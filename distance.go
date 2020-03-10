@@ -13,7 +13,7 @@ type distance func(h1, h2 *hist) int
 func getDistanceFunction(distanceType string) distance {
 	switch distanceType {
 	case "manhattan":
-		return manhattanDistance4
+		return manhattanDistance3
 	case "chisquare":
 		return chisquareDistance
 	case "intersection":
@@ -29,8 +29,8 @@ func getDistanceFunction(distanceType string) distance {
 	return manhattanDistance
 }
 
-/* Manhattan distance variants
- */
+// Manhattan distance variants
+
 func manhattanDistance(h1, h2 *hist) int {
 	var sum int
 
@@ -93,6 +93,8 @@ func manhattanDistance4(h1, h2 *hist) int {
 	return sum
 }
 
+// Chi Square
+
 func chisquareDistance(h1, h2 *hist) int {
 	var sum int
 
@@ -109,13 +111,39 @@ func chisquareDistance(h1, h2 *hist) int {
 	return sum / 2
 }
 
+func chisquareDistance2(h1, h2 *hist) int {
+	var sum int
+	var p1 float64
+	var p2 float64
+
+	for i := 0; i < dimm; i++ {
+		for j := 0; j < dimm; j++ {
+			for k := 0; k < dimm; k++ {
+				p1 = float64(h1[i][j][k] - h2[i][j][k])
+				p2 = float64(h1[i][j][k] + h2[i][j][k])
+				if p2 > 0.0 {
+					sum += int(p1 * p1 / p2)
+				}
+			}
+		}
+	}
+
+	return sum / 2
+}
+
+// Intersection
+
 func intersectionDistance(h1, h2 *hist) int {
 	panic("intersection not implemented")
 }
 
+// Correlation
+
 func correlationDistance(h1, h2 *hist) int {
 	panic("correlation not implemented")
 }
+
+// Bhattacharry
 
 func bhattacharyyaDistance(h1, h2 *hist) int {
 	panic("bhattacharyya not implemented")
